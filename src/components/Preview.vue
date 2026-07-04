@@ -1,467 +1,481 @@
 <template>
-  <aside id="preview-pane-wrapper" class="bg-slate-950 border-l border-slate-800 flex flex-col h-full overflow-hidden">
-    <!-- Cabeçalho do Preview -->
-    <div class="preview-header bg-slate-900 border-b border-slate-800 px-6 py-4 flex justify-between items-center flex-shrink-0">
-      <h3 class="text-xs font-bold text-slate-200">Pré-visualização (Normas ABNT/UNINTER)</h3>
+  <aside id="preview-pane-wrapper" class="bg-slate-950 border-l border-slate-800 flex flex-col h-full overflow-hidden w-full">
+    <!-- Cabeçalho com Abas de Visualização -->
+    <div class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex justify-between items-center flex-shrink-0">
+      <div class="flex gap-2">
+        <button 
+          @click="activeTab = 'render'"
+          class="px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all"
+          :class="activeTab === 'render' ? 'bg-sky-500/10 text-sky-400 border border-sky-500/20' : 'text-slate-400 hover:text-slate-200'"
+        >
+          Visualização Renderizada
+        </button>
+        <button 
+          @click="activeTab = 'raw'"
+          class="px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all"
+          :class="activeTab === 'raw' ? 'bg-sky-500/10 text-sky-400 border border-sky-500/20' : 'text-slate-400 hover:text-slate-200'"
+        >
+          Código Markdown (.md)
+        </button>
+      </div>
+      
       <div class="flex items-center gap-3">
-        <span class="text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20 px-2 py-0.5 rounded-full">
-          Simulação A4
-        </span>
+        <button 
+          @click="handleCopyMarkdown" 
+          class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all"
+        >
+          <Copy class="w-3.5 h-3.5" />
+          Copiar MD
+        </button>
+        <button 
+          @click="handleDownloadMarkdown" 
+          class="bg-sky-500 hover:bg-sky-400 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all"
+        >
+          <Download class="w-3.5 h-3.5" />
+          Baixar .md
+        </button>
         <button 
           @click="store.showPreviewMobile = false" 
-          class="btn btn-secondary btn-sm md:hidden text-xs font-medium text-slate-400 hover:text-slate-200 cursor-pointer"
+          class="md:hidden text-xs font-medium text-slate-400 hover:text-slate-200 cursor-pointer"
         >
           Ocultar
         </button>
       </div>
     </div>
 
-    <!-- Container da Folha A4 -->
-    <div id="report-document" class="flex-1 overflow-y-auto p-8 bg-slate-950 flex flex-col items-center gap-8">
+    <!-- Área de Exibição -->
+    <div class="flex-1 overflow-y-auto p-8 bg-slate-950 scroll-smooth">
+      <!-- Aba 1: Renderizado (Estilo Markdown GitHub Dark) -->
+      <div v-if="activeTab === 'render'" class="max-w-3xl mx-auto space-y-8 font-sans text-slate-300 leading-relaxed text-sm">
         
-        <!-- CAPA -->
-        <div class="a4-page page capa-page font-arial shadow-2xl shadow-black/80">
-          <div class="capa-header text-xs tracking-wide">
-            <div>CENTRO UNIVERSITÁRIO INTERNACIONAL UNINTER</div>
-            <div v-if="hasValue(store.reportData.curso)">CURSO: {{ store.reportData.curso }}</div>
-            <div v-else class="preview-field empty-field">CURSO: [NOME DO CURSO]</div>
+        <!-- Capa/Informações Iniciais em Bloco -->
+        <div class="bg-slate-900/60 border-l-4 border-sky-500 p-6 rounded-r-xl space-y-3">
+          <div class="text-xs font-bold text-sky-400 uppercase tracking-wider">Centro Universitário Internacional Uninter</div>
+          <h1 class="text-xl font-bold text-white uppercase">{{ store.reportData.curso || '[CURSO NÃO PREENCHIDO]' }}</h1>
+          <div class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Projeto Interdisciplinar I</div>
+          <div class="text-md font-bold text-slate-100">Relatório: Minha Profissão em Computação</div>
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-400 pt-3 border-t border-slate-800">
+            <div><strong>Aluno(a):</strong> {{ store.reportData.aluno || '[Não preenchido]' }}</div>
+            <div><strong>RU:</strong> {{ store.reportData.ru || '[Não preenchido]' }}</div>
+            <div><strong>Professor:</strong> Prof. Eros Leon Kohler, Me.</div>
+            <div><strong>Ano:</strong> {{ store.reportData.ano || 2026 }}</div>
           </div>
+        </div>
+
+        <hr class="border-slate-800" />
+
+        <!-- 1. Introdução -->
+        <div class="space-y-3">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <span class="text-sky-500">#</span> 1. Introdução
+          </h2>
+          <p>
+            Neste trabalho, é apresentada uma pesquisa sobre a profissão/área de atuação de 
+            <strong class="text-sky-400">{{ store.reportData.intro_profissao || '[profissão ou área escolhida]' }}</strong>. 
+            A escolha desta área justifica-se pelo seguinte motivo:
+          </p>
+          <blockquote class="border-l-4 border-slate-700 pl-4 italic text-slate-400 bg-slate-900/30 py-2 rounded-r-lg">
+            {{ store.reportData.intro_motivo || '[explicação do motivo da escolha não preenchida]' }}
+          </blockquote>
+          <p>
+            O objetivo principal deste relatório é analisar o perfil deste profissional, as competências e tecnologias envolvidas no dia a dia da profissão, as formas de inserção no mercado de trabalho e estabelecer uma reflexão crítica de carreira alinhada aos objetivos do curso.
+          </p>
+        </div>
+
+        <hr class="border-slate-800" />
+
+        <!-- 2. Profissão Escolhida -->
+        <div class="space-y-4">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <span class="text-sky-500">#</span> 2. Profissão ou área escolhida
+          </h2>
           
-          <div class="capa-title-container">
-            <h1 class="capa-title">PROJETO INTERDISCIPLINAR I</h1>
-            <h2 class="capa-subtitle">RELATÓRIO: MINHA PROFISSÃO EM COMPUTAÇÃO</h2>
-          </div>
-
-          <div class="capa-student-box text-right text-xs mr-8">
-            <div v-if="hasValue(store.reportData.aluno)">ALUNO(A): {{ store.reportData.aluno }}</div>
-            <div v-else class="preview-field empty-field">ALUNO(A): [NOME DO ALUNO]</div>
-            <div v-if="hasValue(store.reportData.ru)" class="mt-1">RU: {{ store.reportData.ru }}</div>
-            <div v-else class="preview-field empty-field mt-1">RU: [RU DO ALUNO]</div>
-          </div>
-
-          <div class="capa-footer text-[10pt]">
-            <div class="professor mb-1">PROFESSOR ORIENTADOR: PROF. EROS LEON KOHLER, ME.</div>
-            <div class="ano">{{ store.reportData.ano || 2026 }}</div>
-          </div>
-        </div>
-
-        <!-- SUMÁRIO -->
-        <div class="a4-page page sumario-page font-arial shadow-2xl shadow-black/80">
-          <h2 class="section-title text-center">SUMÁRIO</h2>
-          <ul class="sumario-list">
-            <li><span class="sumario-text">1. Introdução</span><span class="sumario-dots"></span><span class="sumario-num">3</span></li>
-            <li><span class="sumario-text">2. Profissão ou área escolhida</span><span class="sumario-dots"></span><span class="sumario-num">3</span></li>
-            <li><span class="sumario-sub-text">2.1 O que faz esse profissional?</span><span class="sumario-dots"></span><span class="sumario-num">3</span></li>
-            <li><span class="sumario-sub-text">2.2 Onde esse profissional pode atuar?</span><span class="sumario-dots"></span><span class="sumario-num">3</span></li>
-            <li><span class="sumario-text">3. Competências necessárias</span><span class="sumario-dots"></span><span class="sumario-num">4</span></li>
-            <li><span class="sumario-sub-text">3.1 Competências técnicas</span><span class="sumario-dots"></span><span class="sumario-num">4</span></li>
-            <li><span class="sumario-sub-text">3.2 Competências comportamentais</span><span class="sumario-dots"></span><span class="sumario-num">4</span></li>
-            <li><span class="sumario-text">4. Tecnologias, ferramentas e conhecimentos utilizados</span><span class="sumario-dots"></span><span class="sumario-num">4</span></li>
-            <li><span class="sumario-text">5. Formas de ingresso na área</span><span class="sumario-dots"></span><span class="sumario-num">5</span></li>
-            <li><span class="sumario-text">6. Desafios da profissão</span><span class="sumario-dots"></span><span class="sumario-num">5</span></li>
-            <li><span class="sumario-text">7. Tendências e futuro da área</span><span class="sumario-dots"></span><span class="sumario-num">5</span></li>
-            <li><span class="sumario-text">8. Relação com meu curso</span><span class="sumario-dots"></span><span class="sumario-num">5</span></li>
-            <li><span class="sumario-text">9. Reflexão pessoal: minha trajetória e a profissão pesquisada</span><span class="sumario-dots"></span><span class="sumario-num">6</span></li>
-            <li><span class="sumario-sub-text">9.1 Por que essa profissão chamou minha atenção?</span><span class="sumario-dots"></span><span class="sumario-num">6</span></li>
-            <li><span class="sumario-sub-text">9.2 Quais aspectos da profissão mais despertaram meu interesse?</span><span class="sumario-dots"></span><span class="sumario-num">6</span></li>
-            <li><span class="sumario-sub-text">9.3 Quais competências eu já possuo que podem ajudar?</span><span class="sumario-dots"></span><span class="sumario-num">6</span></li>
-            <li><span class="sumario-sub-text">9.4 Quais competências preciso desenvolver?</span><span class="sumario-dots"></span><span class="sumario-num">6</span></li>
-            <li><span class="sumario-sub-text">9.5 Quais dificuldades podem surgir na minha trajetória?</span><span class="sumario-dots"></span><span class="sumario-num">7</span></li>
-            <li><span class="sumario-sub-text">9.6 Como minha realidade de vida influencia meu caminho?</span><span class="sumario-dots"></span><span class="sumario-num">7</span></li>
-            <li><span class="sumario-sub-text">9.7 Como posso me preparar melhor para atuar na área?</span><span class="sumario-dots"></span><span class="sumario-num">7</span></li>
-            <li><span class="sumario-text">10. Planejamento inicial de carreira</span><span class="sumario-dots"></span><span class="sumario-num">7</span></li>
-            <li><span class="sumario-text">11. Educação financeira aplicada à carreira</span><span class="sumario-dots"></span><span class="sumario-num">7</span></li>
-            <li><span class="sumario-sub-text">11.1 Possíveis custos para minha formação</span><span class="sumario-dots"></span><span class="sumario-num">8</span></li>
-            <li><span class="sumario-sub-text">11.2 Prioridades financeiras</span><span class="sumario-dots"></span><span class="sumario-num">8</span></li>
-            <li><span class="sumario-text">12. Conclusão</span><span class="sumario-dots"></span><span class="sumario-num">8</span></li>
-            <li><span class="sumario-text">13. Referências</span><span class="sumario-dots"></span><span class="sumario-num">9</span></li>
-          </ul>
-        </div>
-
-        <!-- INTRODUÇÃO E SEÇÃO 2 -->
-        <div class="a4-page page body-page font-arial shadow-2xl shadow-black/80">
-          <h2 class="section-title">1. Introdução</h2>
-          <div class="academic-text">
-            Neste trabalho, será apresentada uma pesquisa sobre a profissão/área de atuação de 
-            <span :class="{ 'placeholder': !hasValue(store.reportData.intro_profissao) }">
-              {{ store.reportData.intro_profissao || '[profissão ou área escolhida]' }}
-            </span>.
-            Escolhi essa profissão/área porque 
-            <span :class="{ 'placeholder': !hasValue(store.reportData.intro_motivo) }">
-              {{ store.reportData.intro_motivo || '[explique brevemente o motivo da escolha]' }}
-            </span>.
-            O objetivo deste trabalho é compreender melhor como essa profissão funciona, quais competências são necessárias, quais tecnologias são utilizadas, quais desafios existem para ingressar na área e como essa trajetória se relaciona com meus objetivos acadêmicos, profissionais e pessoais.
-          </div>
-
-          <h2 class="section-title" style="margin-top: 2rem;">2. Profissão ou área escolhida</h2>
-          <table class="academic-table compact">
+          <table class="w-full border-collapse border border-slate-800 text-left text-xs text-slate-300">
             <thead>
-              <tr>
-                <th style="width: 40%">Campo</th>
-                <th style="width: 60%">Preenchimento</th>
+              <tr class="bg-slate-900 text-slate-100">
+                <th class="border border-slate-800 px-4 py-2 w-1/3">Campo</th>
+                <th class="border border-slate-800 px-4 py-2 w-2/3">Informação</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td><strong>Profissão/área pesquisada</strong></td>
-                <td>
-                  <span :class="{ 'placeholder': !hasValue(store.reportData.intro_profissao) }">
-                    {{ store.reportData.intro_profissao || '[profissão ou área escolhida]' }}
-                  </span>
-                </td>
+                <td class="border border-slate-800 px-4 py-2 font-bold bg-slate-900/20">Profissão/Área Pesquisada</td>
+                <td class="border border-slate-800 px-4 py-2">{{ store.reportData.intro_profissao || '[Não preenchido]' }}</td>
               </tr>
             </tbody>
           </table>
 
-          <h3 class="subsection-title">2.1 O que faz esse profissional?</h3>
-          <p class="academic-instructions">As principais atividades realizadas por esse profissional são:</p>
-          <ul v-if="hasListItems(store.reportData.atividades)" class="academic-list">
-            <li v-for="(item, idx) in filterEmpty(store.reportData.atividades)" :key="idx">{{ item }}</li>
-          </ul>
-          <ul v-else class="academic-list placeholder-list">
-            <li>[Atividade 1]</li>
-            <li>[Atividade 2]</li>
-            <li>[Atividade 3]</li>
-          </ul>
+          <div class="space-y-2">
+            <h3 class="text-sm font-bold text-slate-200">2.1 O que faz esse profissional?</h3>
+            <ul class="list-disc pl-5 space-y-1 text-slate-300">
+              <li v-for="(act, idx) in filterList(store.reportData.atividades)" :key="idx">{{ act }}</li>
+              <li v-if="filterList(store.reportData.atividades).length === 0" class="text-slate-500 italic">[Nenhuma atividade cadastrada]</li>
+            </ul>
+          </div>
 
-          <h3 class="subsection-title">2.2 Onde esse profissional pode atuar?</h3>
-          <p class="academic-instructions">Ambientes e setores onde essa profissão aparece:</p>
-          <ul v-if="hasListItems(store.reportData.setores)" class="academic-list">
-            <li v-for="(item, idx) in filterEmpty(store.reportData.setores)" :key="idx">{{ item }}</li>
-          </ul>
-          <ul v-else class="academic-list placeholder-list">
-            <li>[Setor/Ambiente 1]</li>
-            <li>[Setor/Ambiente 2]</li>
-            <li>[Setor/Ambiente 3]</li>
-          </ul>
+          <div class="space-y-2">
+            <h3 class="text-sm font-bold text-slate-200">2.2 Onde esse profissional pode atuar?</h3>
+            <ul class="list-disc pl-5 space-y-1 text-slate-300">
+              <li v-for="(sec, idx) in filterList(store.reportData.setores)" :key="idx">{{ sec }}</li>
+              <li v-if="filterList(store.reportData.setores).length === 0" class="text-slate-500 italic">[Nenhum setor cadastrado]</li>
+            </ul>
+          </div>
         </div>
 
-        <!-- COMPETÊNCIAS -->
-        <div class="a4-page page body-page font-arial shadow-2xl shadow-black/80">
-          <h2 class="section-title">3. Competências necessárias</h2>
-          
-          <h3 class="subsection-title">3.1 Competências técnicas</h3>
-          <table class="academic-table">
-            <thead>
-              <tr>
-                <th style="width: 35%">Competência técnica</th>
-                <th style="width: 65%">Por que ela é importante?</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(c, idx) in store.reportData.comp_tecnicas" :key="idx">
-                <td :class="{ 'placeholder': !c.nome }">{{ c.nome || `[Competência Técnica ${idx + 1}]` }}</td>
-                <td :class="{ 'placeholder': !c.desc }">{{ c.desc || '[Explicação prática]' }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <hr class="border-slate-800" />
 
-          <h3 class="subsection-title" style="margin-top: 2rem;">3.2 Competências comportamentais</h3>
-          <table class="academic-table">
-            <thead>
-              <tr>
-                <th style="width: 35%">Competência comportamental</th>
-                <th style="width: 65%">Por que ela é importante?</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(c, idx) in store.reportData.comp_comportamentais" :key="idx">
-                <td :class="{ 'placeholder': !c.nome }">{{ c.nome || `[Competência Comportamental ${idx + 1}]` }}</td>
-                <td :class="{ 'placeholder': !c.desc }">{{ c.desc || '[Explicação prática]' }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <!-- 3. Competências -->
+        <div class="space-y-4">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <span class="text-sky-500">#</span> 3. Competências necessárias
+          </h2>
+
+          <div class="space-y-2">
+            <h3 class="text-sm font-bold text-slate-200">3.1 Competências técnicas (Hard Skills)</h3>
+            <table class="w-full border-collapse border border-slate-800 text-left text-xs text-slate-300">
+              <thead>
+                <tr class="bg-slate-900 text-slate-100">
+                  <th class="border border-slate-800 px-4 py-2 w-1/3">Competência Técnica</th>
+                  <th class="border border-slate-800 px-4 py-2 w-2/3">Por que ela é importante?</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(c, idx) in store.reportData.comp_tecnicas" :key="idx">
+                  <td class="border border-slate-800 px-4 py-2 font-bold">{{ c.nome || '[Não preenchido]' }}</td>
+                  <td class="border border-slate-800 px-4 py-2">{{ c.desc || '[Não preenchido]' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="space-y-2">
+            <h3 class="text-sm font-bold text-slate-200">3.2 Competências comportamentais (Soft Skills)</h3>
+            <table class="w-full border-collapse border border-slate-800 text-left text-xs text-slate-300">
+              <thead>
+                <tr class="bg-slate-900 text-slate-100">
+                  <th class="border border-slate-800 px-4 py-2 w-1/3">Competência Comportamental</th>
+                  <th class="border border-slate-800 px-4 py-2 w-2/3">Por que ela é importante?</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(c, idx) in store.reportData.comp_comportamentais" :key="idx">
+                  <td class="border border-slate-800 px-4 py-2 font-bold">{{ c.nome || '[Não preenchido]' }}</td>
+                  <td class="border border-slate-800 px-4 py-2">{{ c.desc || '[Não preenchido]' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <!-- TECNOLOGIAS E INGRESSO -->
-        <div class="a4-page page body-page font-arial shadow-2xl shadow-black/80">
-          <h2 class="section-title">4. Tecnologias, ferramentas e conhecimentos utilizados</h2>
-          <table class="academic-table">
+        <hr class="border-slate-800" />
+
+        <!-- 4. Tecnologias -->
+        <div class="space-y-3">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <span class="text-sky-500">#</span> 4. Tecnologias, ferramentas e conhecimentos utilizados
+          </h2>
+          <table class="w-full border-collapse border border-slate-800 text-left text-xs text-slate-300">
             <thead>
-              <tr>
-                <th style="width: 35%">Tecnologia / Ferramenta</th>
-                <th style="width: 65%">Como é usado na profissão?</th>
+              <tr class="bg-slate-900 text-slate-100">
+                <th class="border border-slate-800 px-4 py-2 w-1/3">Tecnologia / Ferramenta</th>
+                <th class="border border-slate-800 px-4 py-2 w-2/3">Como é usada na profissão?</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(t, idx) in store.reportData.tecnologias" :key="idx">
-                <td :class="{ 'placeholder': !t.nome }">{{ t.nome || `[Tecnologia ${idx + 1}]` }}</td>
-                <td :class="{ 'placeholder': !t.desc }">{{ t.desc || '[Como é usada]' }}</td>
+                <td class="border border-slate-800 px-4 py-2 font-bold">{{ t.nome || '[Não preenchido]' }}</td>
+                <td class="border border-slate-800 px-4 py-2">{{ t.desc || '[Não preenchido]' }}</td>
               </tr>
             </tbody>
           </table>
+        </div>
 
-          <h2 class="section-title" style="margin-top: 3rem;">5. Formas de ingresso na área</h2>
-          <p class="academic-instructions">Formas pelas quais uma pessoa pode começar nessa profissão:</p>
-          <ul v-if="hasListItems(store.reportData.ingresso)" class="academic-list">
-            <li v-for="(item, idx) in filterEmpty(store.reportData.ingresso)" :key="idx">{{ item }}</li>
-          </ul>
-          <ul v-else class="academic-list placeholder-list">
-            <li>[Forma de ingresso 1]</li>
-            <li>[Forma de ingresso 2]</li>
-            <li>[Forma de ingresso 3]</li>
+        <hr class="border-slate-800" />
+
+        <!-- 5. Formas de Ingresso -->
+        <div class="space-y-3">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <span class="text-sky-500">#</span> 5. Formas de ingresso na área
+          </h2>
+          <ul class="list-disc pl-5 space-y-1 text-slate-300">
+            <li v-for="(ing, idx) in filterList(store.reportData.ingresso)" :key="idx">{{ ing }}</li>
+            <li v-if="filterList(store.reportData.ingresso).length === 0" class="text-slate-500 italic">[Nenhuma forma de ingresso cadastrada]</li>
           </ul>
         </div>
 
-        <!-- DESAFIOS E TENDÊNCIAS -->
-        <div class="a4-page page body-page font-arial shadow-2xl shadow-black/80">
-          <h2 class="section-title">6. Desafios da profissão</h2>
-          <table class="academic-table">
+        <hr class="border-slate-800" />
+
+        <!-- 6. Desafios -->
+        <div class="space-y-3">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <span class="text-sky-500">#</span> 6. Desafios da profissão
+          </h2>
+          <table class="w-full border-collapse border border-slate-800 text-left text-xs text-slate-300">
             <thead>
-              <tr>
-                <th style="width: 40%">Desafio</th>
-                <th style="width: 60%">Como esse desafio pode ser enfrentado?</th>
+              <tr class="bg-slate-900 text-slate-100">
+                <th class="border border-slate-800 px-4 py-2 w-1/3">Desafio Identificado</th>
+                <th class="border border-slate-800 px-4 py-2 w-2/3">Como este desafio pode ser enfrentado?</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(d, idx) in store.reportData.desafios" :key="idx">
-                <td :class="{ 'placeholder': !d.nome }">{{ d.nome || `[Desafio ${idx + 1}]` }}</td>
-                <td :class="{ 'placeholder': !d.desc }">{{ d.desc || '[Solução / Enfrentamento]' }}</td>
+                <td class="border border-slate-800 px-4 py-2 font-bold">{{ d.nome || '[Não preenchido]' }}</td>
+                <td class="border border-slate-800 px-4 py-2">{{ d.desc || '[Não preenchido]' }}</td>
               </tr>
             </tbody>
           </table>
+        </div>
 
-          <h2 class="section-title" style="margin-top: 3rem;">7. Tendências e futuro da área</h2>
-          <p class="academic-instructions">Tendências que podem influenciar essa profissão nos próximos anos:</p>
-          <ul v-if="hasListItems(store.reportData.tendencias)" class="academic-list">
-            <li v-for="(item, idx) in filterEmpty(store.reportData.tendencias)" :key="idx">{{ item }}</li>
-          </ul>
-          <ul v-else class="academic-list placeholder-list">
-            <li>[Tendência tecnológica 1]</li>
-            <li>[Tendência tecnológica 2]</li>
-            <li>[Tendência tecnológica 3]</li>
-          </ul>
+        <hr class="border-slate-800" />
 
-          <h2 class="section-title" style="margin-top: 3rem;">8. Relação com meu curso</h2>
-          <p class="academic-instructions">Como a profissão pesquisada se relaciona com o meu curso:</p>
-          <ul v-if="hasListItems(store.reportData.relacao)" class="academic-list">
-            <li v-for="(item, idx) in filterEmpty(store.reportData.relacao)" :key="idx">{{ item }}</li>
-          </ul>
-          <ul v-else class="academic-list placeholder-list">
-            <li>[Relação curricular 1]</li>
-            <li>[Relação curricular 2]</li>
-            <li>[Relação curricular 3]</li>
+        <!-- 7. Tendências -->
+        <div class="space-y-3">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <span class="text-sky-500">#</span> 7. Tendências e futuro da área
+          </h2>
+          <ul class="list-disc pl-5 space-y-1 text-slate-300">
+            <li v-for="(t, idx) in filterList(store.reportData.tendencias)" :key="idx">{{ t }}</li>
+            <li v-if="filterList(store.reportData.tendencias).length === 0" class="text-slate-500 italic">[Nenhuma tendência cadastrada]</li>
           </ul>
         </div>
 
-        <!-- REFLEXÃO PESSOAL -->
-        <div class="a4-page page body-page font-arial shadow-2xl shadow-black/80">
-          <h2 class="section-title">9. Reflexão pessoal: minha trajetória e a profissão pesquisada</h2>
+        <hr class="border-slate-800" />
+
+        <!-- 8. Relação com Curso -->
+        <div class="space-y-3">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <span class="text-sky-500">#</span> 8. Relação com meu curso
+          </h2>
+          <ul class="list-disc pl-5 space-y-1 text-slate-300">
+            <li v-for="(r, idx) in filterList(store.reportData.relacao)" :key="idx">{{ r }}</li>
+            <li v-if="filterList(store.reportData.relacao).length === 0" class="text-slate-500 italic">[Nenhuma relação cadastrada]</li>
+          </ul>
+        </div>
+
+        <hr class="border-slate-800" />
+
+        <!-- 9. Reflexão Pessoal -->
+        <div class="space-y-4">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <span class="text-sky-500">#</span> 9. Reflexão pessoal
+          </h2>
           
-          <div class="academic-subsection-q">
-            <strong>9.1 Por que essa profissão chamou minha atenção?</strong>
-            <p :class="[hasValue(store.reportData.ref_91) ? 'academic-text' : 'academic-text placeholder']">
-              {{ store.reportData.ref_91 || '[Resposta do estudante não preenchida]' }}
-            </p>
-          </div>
-          <div class="academic-subsection-q">
-            <strong>9.2 Quais aspectos da profissão mais despertaram meu interesse?</strong>
-            <p :class="[hasValue(store.reportData.ref_92) ? 'academic-text' : 'academic-text placeholder']">
-              {{ store.reportData.ref_92 || '[Resposta do estudante não preenchida]' }}
-            </p>
-          </div>
-          <div class="academic-subsection-q">
-            <strong>9.3 Quais competências eu já possuo que podem ajudar nessa trajetória?</strong>
-            <p :class="[hasValue(store.reportData.ref_93) ? 'academic-text' : 'academic-text placeholder']">
-              {{ store.reportData.ref_93 || '[Resposta do estudante não preenchida]' }}
-            </p>
-          </div>
-          <div class="academic-subsection-q">
-            <strong>9.4 Quais competências preciso desenvolver?</strong>
-            <p :class="[hasValue(store.reportData.ref_94) ? 'academic-text' : 'academic-text placeholder']">
-              {{ store.reportData.ref_94 || '[Resposta do estudante não preenchida]' }}
-            </p>
-          </div>
-          <div class="academic-subsection-q">
-            <strong>9.5 Quais dificuldades pessoais, acadêmicas ou profissionais podem surgir na minha trajetória?</strong>
-            <p :class="[hasValue(store.reportData.ref_95) ? 'academic-text' : 'academic-text placeholder']">
-              {{ store.reportData.ref_95 || '[Resposta do estudante não preenchida]' }}
-            </p>
-          </div>
-          <div class="academic-subsection-q">
-            <strong>9.6 Como minha realidade de vida influencia meu caminho profissional?</strong>
-            <p :class="[hasValue(store.reportData.ref_96) ? 'academic-text' : 'academic-text placeholder']">
-              {{ store.reportData.ref_96 || '[Resposta do estudante não preenchida]' }}
-            </p>
-          </div>
-          <div class="academic-subsection-q">
-            <strong>9.7 Como posso me preparar melhor para atuar nessa área?</strong>
-            <p :class="[hasValue(store.reportData.ref_97) ? 'academic-text' : 'academic-text placeholder']">
-              {{ store.reportData.ref_97 || '[Resposta do estudante não preenchida]' }}
-            </p>
+          <div v-for="q in reflexoes" :key="q.id" class="space-y-1.5">
+            <h3 class="text-xs font-bold text-sky-400 uppercase tracking-wide">{{ q.q }}</h3>
+            <blockquote class="border-l-4 border-slate-700 pl-4 italic text-slate-400 bg-slate-900/30 py-2 rounded-r-lg">
+              {{ store.reportData[q.id as keyof typeof store.reportData] || '[Não respondido]' }}
+            </blockquote>
           </div>
         </div>
 
-        <!-- PLANEJAMENTO E CUSTOS -->
-        <div class="a4-page page body-page font-arial shadow-2xl shadow-black/80">
-          <h2 class="section-title">10. Planejamento inicial de carreira</h2>
-          <table class="academic-table">
+        <hr class="border-slate-800" />
+
+        <!-- 10. Planejamento -->
+        <div class="space-y-3">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <span class="text-sky-500">#</span> 10. Planejamento inicial de carreira
+          </h2>
+          <table class="w-full border-collapse border border-slate-800 text-left text-xs text-slate-300">
             <thead>
-              <tr>
-                <th style="width: 20%">Prazo</th>
-                <th style="width: 25%">Meta acadêmica</th>
-                <th style="width: 25%">Meta profissional</th>
-                <th style="width: 30%">Ação prática</th>
+              <tr class="bg-slate-900 text-slate-100">
+                <th class="border border-slate-800 px-4 py-2 w-1/5">Prazo</th>
+                <th class="border border-slate-800 px-4 py-2 w-1/4">Meta Acadêmica</th>
+                <th class="border border-slate-800 px-4 py-2 w-1/4">Meta Profissional</th>
+                <th class="border border-slate-800 px-4 py-2 w-3/10">Ação Prática</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(p, idx) in store.reportData.planejamento" :key="idx">
-                <td><strong>{{ p.prazo }}</strong></td>
-                <td :class="{ 'placeholder': !p.acad }">{{ p.acad || '[Estudos / Cursos]' }}</td>
-                <td :class="{ 'placeholder': !p.prof }">{{ p.prof || '[Foco Profissional]' }}</td>
-                <td :class="{ 'placeholder': !p.acao }">{{ p.acao || '[Ação prática]' }}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h2 class="section-title" style="margin-top: 3rem;">11. Educação financeira aplicada à carreira</h2>
-          <p class="academic-text">Construir uma carreira em Computação exige planejamento. Além de estudar, o estudante pode precisar investir em equipamentos, internet, cursos, certificações, livros, eventos ou ferramentas.</p>
-          
-          <h3 class="subsection-title">11.1 Possíveis custos para minha formação</h3>
-          <table class="academic-table">
-            <thead>
-              <tr>
-                <th style="width: 30%">Item</th>
-                <th style="width: 20%">É necessário agora?</th>
-                <th style="width: 20%">Valor estimado</th>
-                <th style="width: 30%">Observação</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(c, idx) in store.reportData.custos" :key="idx">
-                <td>{{ c.item }}</td>
-                <td>{{ c.nec }}</td>
-                <td>R$ {{ c.valor || '0,00' }}</td>
-                <td>{{ c.obs || '-' }}</td>
+                <td class="border border-slate-800 px-4 py-2 font-bold bg-slate-900/10">{{ p.prazo }}</td>
+                <td class="border border-slate-800 px-4 py-2">{{ p.acad || '[Não preenchido]' }}</td>
+                <td class="border border-slate-800 px-4 py-2">{{ p.prof || '[Não preenchido]' }}</td>
+                <td class="border border-slate-800 px-4 py-2">{{ p.acao || '[Não preenchido]' }}</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <!-- PRIORIDADES E CONCLUSÃO -->
-        <div class="a4-page page body-page font-arial shadow-2xl shadow-black/80">
-          <h3 class="subsection-title">11.2 Prioridades financeiras</h3>
-          <table class="academic-table compact">
-            <thead>
-              <tr>
-                <th style="width: 45%">Campo</th>
-                <th style="width: 55%">Preenchimento</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>Minha meta financeira relacionada à carreira</strong></td>
-                <td>
-                  <span :class="{ 'placeholder': !hasValue(store.reportData.fin_meta) }">
-                    {{ store.reportData.fin_meta || '[Preencher meta financeira]' }}
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td><strong>Valor estimado</strong></td>
-                <td>
-                  <span :class="{ 'placeholder': !hasValue(store.reportData.fin_valor) }">
-                    {{ store.reportData.fin_valor ? `R$ ${store.reportData.fin_valor}` : 'R$ [Valor]' }}
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td><strong>Prazo para alcançar a meta</strong></td>
-                <td>
-                  <span :class="{ 'placeholder': !hasValue(store.reportData.fin_prazo) }">
-                    {{ store.reportData.fin_prazo || '[Prazo]' }}
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td><strong>Quanto precisaria guardar por mês</strong></td>
-                <td>
-                  <span :class="{ 'placeholder': !hasValue(store.reportData.fin_mensal) }">
-                    {{ store.reportData.fin_mensal ? `R$ ${store.reportData.fin_mensal}` : 'R$ [Mensal]' }}
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td><strong>O que posso ajustar na minha rotina</strong></td>
-                <td>
-                  <span :class="{ 'placeholder': !hasValue(store.reportData.fin_ajuste) }">
-                    {{ store.reportData.fin_ajuste || '[Ajustes na rotina]' }}
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <hr class="border-slate-800" />
 
-          <h2 class="section-title" style="margin-top: 3rem;">12. Conclusão</h2>
-          <p class="academic-text">
-            Neste trabalho, compreendi que a profissão/área de 
-            <span :class="{ 'placeholder': !hasValue(store.reportData.intro_profissao) }">
-              {{ store.reportData.intro_profissao || '[profissão ou área escolhida]' }}
-            </span> 
-            exige conhecimentos técnicos, competências comportamentais e planejamento contínuo.
-          </p>
-          
-          <p class="academic-instructions">Os principais aprendizados que tive foram:</p>
-          {{" "}}
-          <ul v-if="hasListItems(store.reportData.aprendizados)" class="academic-list">
-            <li v-for="(item, idx) in filterEmpty(store.reportData.aprendizados)" :key="idx">{{ item }}</li>
-          </ul>
-          <ul v-else class="academic-list placeholder-list">
-            <li>[Aprendizado 1]</li>
-            <li>[Aprendizado 2]</li>
-          </ul>
+        <!-- 11. Educação Financeira -->
+        <div class="space-y-4">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <span class="text-sky-500">#</span> 11. Educação financeira aplicada à carreira
+          </h2>
 
-          <p class="academic-instructions">A pesquisa contribuiu para minha visão de carreira porque:</p>
-          <ul v-if="hasListItems(store.reportData.contribuicao)" class="academic-list">
-            <li v-for="(item, idx) in filterEmpty(store.reportData.contribuicao)" :key="idx">{{ item }}</li>
-          </ul>
-          <ul v-else class="academic-list placeholder-list">
-            <li>[Contribuição de carreira 1]</li>
-            <li>[Contribuição de carreira 2]</li>
-          </ul>
+          <div class="space-y-2">
+            <h3 class="text-sm font-bold text-slate-200">11.1 Possíveis custos para minha formação</h3>
+            <table class="w-full border-collapse border border-slate-800 text-left text-xs text-slate-300">
+              <thead>
+                <tr class="bg-slate-900 text-slate-100">
+                  <th class="border border-slate-800 px-4 py-2 w-1/3">Item</th>
+                  <th class="border border-slate-800 px-4 py-2 w-1/5">Necessário agora?</th>
+                  <th class="border border-slate-800 px-4 py-2 w-1/5">Valor estimado</th>
+                  <th class="border border-slate-800 px-4 py-2 w-4/15">Observação</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(c, idx) in store.reportData.custos" :key="idx">
+                  <td class="border border-slate-800 px-4 py-2 font-bold">{{ c.item }}</td>
+                  <td class="border border-slate-800 px-4 py-2">{{ c.nec }}</td>
+                  <td class="border border-slate-800 px-4 py-2">R$ {{ c.valor || '0,00' }}</td>
+                  <td class="border border-slate-800 px-4 py-2 text-slate-400">{{ c.obs || '-' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-          <p class="academic-instructions">A partir deste estudo, pretendo:</p>
-          <ul v-if="hasListItems(store.reportData.intencoes)" class="academic-list">
-            <li v-for="(item, idx) in filterEmpty(store.reportData.intencoes)" :key="idx">{{ item }}</li>
-          </ul>
-          <ul v-else class="academic-list placeholder-list">
-            <li>[Próxima intenção / Meta 1]</li>
-            <li>[Próxima intenção / Meta 2]</li>
+          <div class="space-y-2">
+            <h3 class="text-sm font-bold text-slate-200">11.2 Prioridades financeiras</h3>
+            <table class="w-full border-collapse border border-slate-800 text-left text-xs text-slate-300">
+              <thead>
+                <tr class="bg-slate-900 text-slate-100">
+                  <th class="border border-slate-800 px-4 py-2 w-5/12">Campo</th>
+                  <th class="border border-slate-800 px-4 py-2 w-7/12">Planejamento</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="border border-slate-800 px-4 py-2 font-bold bg-slate-900/10">Minha meta financeira</td>
+                  <td class="border border-slate-800 px-4 py-2">{{ store.reportData.fin_meta || '[Não preenchido]' }}</td>
+                </tr>
+                <tr>
+                  <td class="border border-slate-800 px-4 py-2 font-bold bg-slate-900/10">Valor estimado</td>
+                  <td class="border border-slate-800 px-4 py-2">R$ {{ store.reportData.fin_valor || '0,00' }}</td>
+                </tr>
+                <tr>
+                  <td class="border border-slate-800 px-4 py-2 font-bold bg-slate-900/10">Prazo planejado</td>
+                  <td class="border border-slate-800 px-4 py-2">{{ store.reportData.fin_prazo || '[Não preenchido]' }}</td>
+                </tr>
+                <tr>
+                  <td class="border border-slate-800 px-4 py-2 font-bold bg-slate-900/10">Economia mensal necessária</td>
+                  <td class="border border-slate-800 px-4 py-2">R$ {{ store.reportData.fin_mensal || '0,00' }}</td>
+                </tr>
+                <tr>
+                  <td class="border border-slate-800 px-4 py-2 font-bold bg-slate-900/10">Ajustes de rotina necessários</td>
+                  <td class="border border-slate-800 px-4 py-2">{{ store.reportData.fin_ajuste || '[Não preenchido]' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <hr class="border-slate-800" />
+
+        <!-- 12. Conclusão -->
+        <div class="space-y-4">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <span class="text-sky-500">#</span> 12. Conclusão
+          </h2>
+
+          <div class="space-y-2">
+            <h3 class="text-sm font-bold text-slate-200">Principais aprendizados obtidos:</h3>
+            <ul class="list-disc pl-5 space-y-1 text-slate-300">
+              <li v-for="(a, idx) in filterList(store.reportData.aprendizados)" :key="idx">{{ a }}</li>
+              <li v-if="filterList(store.reportData.aprendizados).length === 0" class="text-slate-500 italic">[Não preenchido]</li>
+            </ul>
+          </div>
+
+          <div class="space-y-2">
+            <h3 class="text-sm font-bold text-slate-200">Contribuição desta pesquisa para a visão de carreira:</h3>
+            <ul class="list-disc pl-5 space-y-1 text-slate-300">
+              <li v-for="(c, idx) in filterList(store.reportData.contribuicao)" :key="idx">{{ c }}</li>
+              <li v-if="filterList(store.reportData.contribuicao).length === 0" class="text-slate-500 italic">[Não preenchido]</li>
+            </ul>
+          </div>
+
+          <div class="space-y-2">
+            <h3 class="text-sm font-bold text-slate-200">Ações práticas pretendidas:</h3>
+            <ul class="list-disc pl-5 space-y-1 text-slate-300">
+              <li v-for="(i, idx) in filterList(store.reportData.intencoes)" :key="idx">{{ i }}</li>
+              <li v-if="filterList(store.reportData.intencoes).length === 0" class="text-slate-500 italic">[Não preenchido]</li>
+            </ul>
+          </div>
+        </div>
+
+        <hr class="border-slate-800" />
+
+        <!-- 13. Referências -->
+        <div class="space-y-3">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <span class="text-sky-500">#</span> 13. Referências
+          </h2>
+          <ul class="list-disc pl-5 space-y-1 text-slate-300">
+            <li v-for="(ref, idx) in filterList(store.reportData.referencias)" :key="idx">{{ ref }}</li>
+            <li v-if="filterList(store.reportData.referencias).length === 0" class="text-slate-500 italic">[Nenhuma referência cadastrada]</li>
           </ul>
         </div>
 
-        <!-- REFERÊNCIAS -->
-        <div class="a4-page page body-page font-arial shadow-2xl shadow-black/80">
-          <h2 class="section-title">13. Referências</h2>
-          <p class="academic-instructions">Fontes bibliográficas e digitais consultadas:</p>
-          <ul v-if="hasListItems(store.reportData.referencias)" class="academic-list">
-            <li v-for="(item, idx) in filterEmpty(store.reportData.referencias)" :key="idx">{{ item }}</li>
-          </ul>
-          <ul v-else class="academic-list placeholder-list">
-            <li>[Fonte consultada 1]</li>
-            <li>[Fonte consultada 2]</li>
-            <li>[Fonte consultada 3]</li>
-          </ul>
-        </div>
+      </div>
 
+      <!-- Aba 2: Código Markdown Cru (Raw) -->
+      <div v-else class="max-w-3xl mx-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-2xl">
+          <div class="bg-slate-950 px-4 py-2 border-b border-slate-800 flex justify-between items-center text-[10px] text-slate-500 font-bold font-mono">
+            <span>RELATORIO.md</span>
+            <span>MARKDOWN</span>
+          </div>
+          <textarea
+            readonly
+            rows="30"
+            class="w-full bg-slate-900/50 text-emerald-400 font-mono text-xs p-6 focus:outline-none resize-none select-text selection:bg-sky-500/20 leading-relaxed"
+            :value="markdownContent"
+          ></textarea>
+        </div>
+      </div>
     </div>
   </aside>
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue';
 import { useReportStore } from '../stores/reportStore';
+import { compileReportToMarkdown } from '../services/markdownGenerator';
+import { Copy, Download } from 'lucide-vue-next';
+
 const store = useReportStore();
+const activeTab = ref<'render' | 'raw'>('render');
 
-// Helpers para avaliar campos e listas
-const hasValue = (val: any) => {
-  return val !== undefined && val !== null && val.toString().trim() !== "";
-};
+// Gera o Markdown dinamicamente com base no estado da store
+const markdownContent = computed(() => {
+  return compileReportToMarkdown(store.reportData);
+});
 
-const filterEmpty = (list: string[]) => {
+// Filtra campos vazios para listas
+const filterList = (list: string[]) => {
   return list ? list.filter(item => item && item.trim() !== "") : [];
 };
 
-const hasListItems = (list: string[]) => {
-  return filterEmpty(list).length > 0;
+// Copia o código Markdown para a área de transferência
+const handleCopyMarkdown = async () => {
+  try {
+    await navigator.clipboard.writeText(markdownContent.value);
+    alert("Código Markdown copiado para a área de transferência!");
+  } catch (err) {
+    alert("Falha ao copiar Markdown.");
+  }
 };
+
+// Faz o download do arquivo .md
+const handleDownloadMarkdown = () => {
+  const blob = new Blob([markdownContent.value], { type: 'text/markdown;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const dlAnchorElem = document.createElement('a');
+  dlAnchorElem.setAttribute("href", url);
+  
+  const studentName = store.reportData.aluno.trim().replace(/\s+/g, '_') || 'Estudante';
+  dlAnchorElem.setAttribute("download", `Relatorio_PI1_${studentName}.md`);
+  dlAnchorElem.click();
+  URL.revokeObjectURL(url);
+};
+
+const reflexoes = [
+  { id: "ref_91", q: "9.1 Por que essa profissão chamou minha atenção?" },
+  { id: "ref_92", q: "9.2 Quais aspectos da profissão mais despertaram meu interesse?" },
+  { id: "ref_93", q: "9.3 Quais competências eu já possuo que podem ajudar?" },
+  { id: "ref_94", q: "9.4 Quais competências preciso desenvolver?" },
+  { id: "ref_95", q: "9.5 Quais dificuldades podem surgir na minha trajetória?" },
+  { id: "ref_96", q: "9.6 Como minha realidade de vida influencia meu caminho?" },
+  { id: "ref_97", q: "9.7 Como posso me preparar melhor para atuar na área?" }
+];
 </script>

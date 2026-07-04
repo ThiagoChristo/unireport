@@ -47,13 +47,13 @@
 
     <!-- Rodapé com Ações -->
     <div class="p-4 border-t border-slate-800 bg-slate-950/20 flex-shrink-0 space-y-2.5">
-      <!-- Botão Imprimir / PDF -->
+      <!-- Botão Copiar Markdown -->
       <button 
-        @click="handlePrint" 
+        @click="handleCopyMarkdown" 
         class="w-full bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold py-2.5 px-4 rounded-lg text-xs flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-sky-500/10 active:scale-[0.98] transition-all"
       >
-        <Printer class="w-4 h-4" />
-        Imprimir / PDF
+        <Copy class="w-4 h-4" />
+        Copiar Markdown (.md)
       </button>
 
       <!-- Botão Exportar Word -->
@@ -105,7 +105,8 @@
 import { ref } from 'vue';
 import { useReportStore } from '../stores/reportStore';
 import { generateWordReport } from '../services/wordGenerator';
-import { Printer, FileDown } from 'lucide-vue-next';
+import { compileReportToMarkdown } from '../services/markdownGenerator';
+import { FileDown, Copy } from 'lucide-vue-next';
 
 const store = useReportStore();
 const importFileInput = ref<HTMLInputElement | null>(null);
@@ -128,8 +129,14 @@ const navItems = [
   { id: 'checklist', num: '✓', label: 'Checklist de Entrega', isChecklist: true }
 ];
 
-const handlePrint = () => {
-  window.print();
+const handleCopyMarkdown = async () => {
+  try {
+    const md = compileReportToMarkdown(store.reportData);
+    await navigator.clipboard.writeText(md);
+    alert("Código Markdown copiado para a área de transferência!");
+  } catch (err) {
+    alert("Falha ao copiar o Markdown.");
+  }
 };
 
 const handleExportWord = async () => {
