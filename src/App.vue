@@ -32,6 +32,7 @@
 
     <!-- Painel de Pré-visualização Acadêmica (Lado Direito) -->
     <div 
+      id="preview-pane"
       :class="['h-full overflow-hidden transition-all duration-300', store.showPreviewMobile ? 'fixed inset-0 z-40 block w-full bg-slate-950 active-mobile' : 'hidden md:block']"
     >
       <Preview />

@@ -295,6 +295,9 @@ body {
   }
 
   #preview-pane {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
     overflow: visible !important;
   }
   
