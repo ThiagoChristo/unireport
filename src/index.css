@@ -1,0 +1,921 @@
+/* ==========================================================================
+   CSS PRINCIPAL - GERADOR DE RELATÓRIO (REACT + VITE)
+   ========================================================================== */
+
+/* VARIÁVEIS DE ESTILO (TEMA PREMIUM ESCURO PARA O EDITOR) */
+:root {
+    --bg-app: #0f172a;
+    --bg-sidebar: #1e293b;
+    --bg-card: #1e293b;
+    --bg-input: #0f172a;
+    --border-color: #334155;
+    
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    
+    --accent: #38bdf8;
+    --accent-hover: #0ea5e9;
+    --accent-glow: rgba(56, 189, 248, 0.15);
+    
+    --danger: #f43f5e;
+    --danger-hover: #e11d48;
+    --success: #10b981;
+    
+    --font-ui: 'Inter', sans-serif;
+    --font-heading: 'Outfit', sans-serif;
+    
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+/* RESET E ESTILOS BÁSICOS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--font-ui);
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+}
+
+/* LAYOUT PRINCIPAL */
+#app-container {
+    display: grid;
+    grid-template-columns: 280px 1fr 1fr;
+    width: 100vw;
+    height: 100vh;
+}
+
+@media (max-width: 1200px) {
+    #app-container {
+        grid-template-columns: 250px 1fr;
+    }
+    #preview-pane-wrapper {
+        display: none !important; /* Oculta em telas menores, alternável por JS */
+    }
+    #preview-pane-wrapper.active-mobile {
+        display: block !important;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 100;
+    }
+}
+
+/* ==========================================================================
+   SIDEBAR (PAINEL DE CONTROLE)
+   ========================================================================== */
+#sidebar {
+    background-color: var(--bg-sidebar);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.logo {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--text-primary);
+}
+
+.logo-accent {
+    color: var(--accent);
+    text-shadow: 0 0 12px var(--accent-glow);
+}
+
+.subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.25rem;
+}
+
+/* PROGRESS BAR */
+.progress-container {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 6px;
+    background-color: var(--bg-app);
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+#progress-bar-fill {
+    height: 100%;
+    background-image: linear-gradient(90deg, var(--accent) 0%, #a855f7 100%);
+    border-radius: 9999px;
+    transition: width var(--transition-normal);
+    box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* NAVEGAÇÃO ENTRE SEÇÕES */
+#section-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 0;
+}
+
+/* Scrollbar customizada para o Editor */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+.nav-list {
+    list-style: none;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 0.65rem 1.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border-left: 3px solid transparent;
+}
+
+.nav-item:hover {
+    color: var(--text-primary);
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.nav-item.active {
+    color: var(--accent);
+    background-color: rgba(56, 189, 248, 0.05);
+    border-left-color: var(--accent);
+    font-weight: 600;
+}
+
+.nav-num {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    opacity: 0.6;
+    margin-right: 0.75rem;
+    width: 18px;
+    display: inline-block;
+}
+
+.nav-item.active .nav-num {
+    opacity: 1;
+    font-weight: 700;
+}
+
+.nav-checklist {
+    border-top: 1px solid var(--border-color);
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    color: #a855f7;
+}
+
+.nav-checklist.active {
+    color: #c084fc;
+    background-color: rgba(168, 85, 247, 0.05);
+    border-left-color: #a855f7;
+}
+
+/* SIDEBAR FOOTER & BOTÕES */
+.sidebar-footer {
+    padding: 1.25rem;
+    border-top: 1px solid var(--border-color);
+    background-color: rgba(15, 23, 42, 0.2);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all var(--transition-fast);
+}
+
+.btn-primary {
+    background-color: var(--accent);
+    color: #0f172a;
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 14px var(--accent-glow);
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.footer-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.btn-secondary {
+    background-color: var(--bg-input);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    font-size: 0.75rem;
+    padding: 0.5rem;
+}
+
+.btn-secondary:hover {
+    background-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.btn-danger {
+    background-color: rgba(244, 63, 94, 0.1);
+    color: var(--danger);
+    border: 1px solid rgba(244, 63, 94, 0.2);
+    font-size: 0.75rem;
+    padding: 0.5rem;
+}
+
+.btn-danger:hover {
+    background-color: var(--danger);
+    color: #fff;
+}
+
+.btn-sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+}
+
+/* ==========================================================================
+   PAINEL DE EDIÇÃO (ESQUERDA)
+   ========================================================================== */
+#editor-pane {
+    background-color: var(--bg-app);
+    padding: 2.5rem;
+    overflow-y: auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.editor-section {
+    display: none;
+    animation: fadeIn var(--transition-normal);
+}
+
+.editor-section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h2 {
+    font-family: var(--font-heading);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.section-help {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+/* COMPONENTES DE FORMULÁRIO */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.field-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: -0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+    width: 100%;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    color: var(--text-primary);
+    padding: 0.75rem 1rem;
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    transition: all var(--transition-fast);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-muted);
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* LISTAS DINÂMICAS DO EDITOR */
+.dynamic-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.dynamic-list-item {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    animation: slideIn var(--transition-fast);
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.btn-remove-item {
+    background-color: rgba(244, 63, 94, 0.1);
+    color: var(--danger);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    cursor: pointer;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+}
+
+.btn-remove-item:hover {
+    background-color: var(--danger);
+    color: white;
+}
+
+/* TABELAS DO EDITOR */
+.competency-table-wrapper {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.editor-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.editor-table th {
+    background-color: rgba(15, 23, 42, 0.3);
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.editor-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: top;
+}
+
+.editor-table tr:last-child td {
+    border-bottom: none;
+}
+
+.editor-table input,
+.editor-table textarea {
+    padding: 0.5rem 0.75rem;
+    background-color: rgba(15, 23, 42, 0.4);
+}
+
+.editor-table td strong {
+    display: block;
+    padding-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* CHECKLIST DE ENTREGA (INTERFACE DO EDITOR) */
+.checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.checklist-item:hover {
+    border-color: #a855f7;
+    background-color: rgba(168, 85, 247, 0.02);
+}
+
+.checklist-item.checked {
+    border-color: rgba(16, 185, 129, 0.4);
+    background-color: rgba(16, 185, 129, 0.02);
+}
+
+.checklist-checkbox {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.checklist-item.checked .checklist-checkbox {
+    background-color: var(--success);
+    border-color: var(--success);
+}
+
+.checklist-checkbox::after {
+    content: '✓';
+    color: white;
+    font-size: 0.8rem;
+    font-weight: bold;
+    display: none;
+}
+
+.checklist-item.checked .checklist-checkbox::after {
+    display: block;
+}
+
+.checklist-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.checklist-item.checked .checklist-text {
+    color: var(--text-muted);
+    text-decoration: line-through;
+}
+
+/* ==========================================================================
+   PAINEL DE PRÉ-VISUALIZAÇÃO (DIREITA)
+   ========================================================================== */
+#preview-pane-wrapper {
+    background-color: #0b0f19;
+    border-left: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+#preview-pane {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.preview-header {
+    background-color: var(--bg-sidebar);
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.preview-header h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.preview-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.preview-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    background-color: rgba(56, 189, 248, 0.1);
+    color: var(--accent);
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.a4-page-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    background-color: #0b0f19;
+}
+
+/* FOLHA A4 SIMULADA (REGRAS DO RELATÓRIO) */
+.a4-page {
+    background-color: #ffffff;
+    color: #000000;
+    width: 210mm;
+    min-height: 297mm;
+    padding: 30mm 20mm 20mm 30mm; /* ABNT: Superior 3cm, Direita 2cm, Inferior 2cm, Esquerda 3cm */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    position: relative;
+    font-size: 12pt;
+    line-height: 1.5;
+    text-align: justify;
+}
+
+.font-arial {
+    font-family: 'Arial', Helvetica, sans-serif;
+}
+
+/* ESTRUTURA INTERNA DO DOCUMENTO PREVIEW */
+.page {
+    position: relative;
+    margin-bottom: 40mm; /* Espaçamento visual no preview entre páginas */
+}
+
+/* Ocultar espaçador de páginas na impressão física */
+@media print {
+    .page {
+        margin-bottom: 0 !important;
+        page-break-after: always;
+    }
+}
+
+/* CAPA ACADÊMICA */
+.capa-page {
+    height: calc(297mm - 50mm); /* Ajuste de altura para a capa caber na página simulada */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+}
+
+.capa-header {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 12pt;
+}
+
+.capa-title-container {
+    margin-top: 4rem;
+}
+
+.capa-title {
+    font-size: 16pt;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.capa-subtitle {
+    font-size: 13pt;
+    font-weight: bold;
+}
+
+.capa-student-box {
+    margin-top: 4rem;
+    font-weight: bold;
+    text-align: right;
+    margin-right: 2cm;
+}
+
+.capa-footer {
+    margin-top: auto;
+    font-size: 11pt;
+    text-transform: uppercase;
+}
+
+.capa-footer .professor {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.capa-footer .ano {
+    font-weight: bold;
+}
+
+/* SUMÁRIO ACADÊMICO */
+.sumario-page {
+    min-height: calc(297mm - 50mm);
+}
+
+.sumario-list {
+    list-style: none;
+    margin-top: 2rem;
+    font-size: 11pt;
+}
+
+.sumario-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 0.5rem;
+}
+
+.sumario-dots {
+    flex: 1;
+    border-bottom: 1px dotted #000;
+    margin: 0 10px;
+    position: relative;
+    bottom: 4px;
+}
+
+.sumario-text {
+    font-weight: bold;
+}
+
+.sumario-sub-text {
+    padding-left: 1.5rem;
+}
+
+.sumario-num {
+    font-weight: bold;
+}
+
+/* PÁGINAS DE CONTEÚDO */
+.body-page {
+    min-height: calc(297mm - 50mm);
+}
+
+.section-title {
+    font-size: 12pt;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+.subsection-title {
+    font-size: 12pt;
+    font-weight: bold;
+    margin-top: 1.25rem;
+    margin-bottom: 0.75rem;
+    text-align: left;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.academic-text {
+    text-indent: 2cm; /* Parágrafo ABNT */
+    margin-bottom: 1rem;
+    text-align: justify;
+}
+
+.academic-instructions {
+    margin-bottom: 0.5rem;
+}
+
+.academic-list {
+    margin-left: 2cm;
+    margin-bottom: 1rem;
+    list-style-type: disc;
+}
+
+.academic-list li {
+    margin-bottom: 0.25rem;
+}
+
+.academic-subsection-q {
+    margin-bottom: 1.25rem;
+}
+
+.academic-subsection-q strong {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.academic-subsection-q p {
+    margin-left: 1rem;
+    text-indent: 0;
+}
+
+/* TABELAS ACADÊMICAS (NORMA) */
+.academic-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 11pt;
+}
+
+.academic-table th,
+.academic-table td {
+    border: 1px solid #000000;
+    padding: 6px 10px;
+    text-align: left;
+}
+
+.academic-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.academic-table.compact th,
+.academic-table.compact td {
+    padding: 4px 8px;
+}
+
+/* PLACEHOLDERS E MENSAGENS VAZIAS NO PREVIEW */
+.placeholder {
+    background-color: #fffee0;
+    border-bottom: 1px dashed #d97706;
+    padding: 0 4px;
+    color: #b45309;
+    font-style: italic;
+}
+
+.placeholder-list li {
+    background-color: #fffee0;
+    color: #b45309;
+    font-style: italic;
+    list-style-type: none;
+    margin-left: -1rem;
+    padding-left: 4px;
+}
+
+.empty-field {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px dashed #f87171;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* ==========================================================================
+   CSS DE IMPRESSÃO (REGRAS DE FORMATAÇÃO DO PDF)
+   ========================================================================== */
+@media print {
+    /* Esconder toda a UI do editor */
+    #sidebar,
+    #editor-pane,
+    .preview-header,
+    #btn-toggle-preview {
+        display: none !important;
+    }
+    
+    /* Configurar o layout principal para preencher a tela */
+    #app-container {
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+    
+    #preview-pane-wrapper {
+        width: 100% !important;
+        height: auto !important;
+        border-left: none !important;
+        background-color: transparent !important;
+        overflow: visible !important;
+        display: block !important;
+    }
+
+    #preview-pane {
+        overflow: visible !important;
+    }
+    
+    .a4-page-container {
+        padding: 0 !important;
+        background-color: transparent !important;
+        overflow: visible !important;
+    }
+    
+    .a4-page {
+        width: 100% !important;
+        box-shadow: none !important;
+        padding: 0 !important; /* Margem controlada pela impressora */
+        margin: 0 !important;
+        background-color: transparent !important;
+    }
+
+    /* Quebra de páginas física */
+    .page {
+        page-break-before: always;
+        margin-bottom: 0 !important;
+        padding-top: 15mm; /* Compensação de margem de impressão */
+    }
+
+    .page:first-child {
+        page-break-before: avoid;
+        padding-top: 0;
+    }
+    
+    /* Ocultar placeholders ou transformá-los em texto em branco se vazios */
+    .placeholder {
+        background-color: transparent !important;
+        border-bottom: none !important;
+        color: #000000 !important;
+    }
+    
+    .empty-field {
+        background-color: transparent !important;
+        border: none !important;
+        color: #000000 !important;
+        padding: 0 !important;
+    }
+
+    /* Otimizações de Cores para Impressão */
+    body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+    }
+}
