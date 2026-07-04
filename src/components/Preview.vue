@@ -17,11 +17,10 @@
     </div>
 
     <!-- Container da Folha A4 -->
-    <div class="flex-1 overflow-y-auto p-8 flex justify-center bg-slate-950">
-      <div id="report-document" class="a4-page font-arial shadow-2xl shadow-black/80">
+    <div id="report-document" class="flex-1 overflow-y-auto p-8 bg-slate-950 flex flex-col items-center gap-8">
         
         <!-- CAPA -->
-        <div class="page capa-page">
+        <div class="a4-page page capa-page font-arial shadow-2xl shadow-black/80">
           <div class="capa-header text-xs tracking-wide">
             <div>CENTRO UNIVERSITÁRIO INTERNACIONAL UNINTER</div>
             <div v-if="hasValue(store.reportData.curso)">CURSO: {{ store.reportData.curso }}</div>
@@ -47,7 +46,7 @@
         </div>
 
         <!-- SUMÁRIO -->
-        <div class="page sumario-page">
+        <div class="a4-page page sumario-page font-arial shadow-2xl shadow-black/80">
           <h2 class="section-title text-center">SUMÁRIO</h2>
           <ul class="sumario-list">
             <li><span class="sumario-text">1. Introdução</span><span class="sumario-dots"></span><span class="sumario-num">3</span></li>
@@ -80,7 +79,7 @@
         </div>
 
         <!-- INTRODUÇÃO E SEÇÃO 2 -->
-        <div class="page body-page">
+        <div class="a4-page page body-page font-arial shadow-2xl shadow-black/80">
           <h2 class="section-title">1. Introdução</h2>
           <div class="academic-text">
             Neste trabalho, será apresentada uma pesquisa sobre a profissão/área de atuação de 
@@ -138,7 +137,7 @@
         </div>
 
         <!-- COMPETÊNCIAS -->
-        <div class="page body-page">
+        <div class="a4-page page body-page font-arial shadow-2xl shadow-black/80">
           <h2 class="section-title">3. Competências necessárias</h2>
           
           <h3 class="subsection-title">3.1 Competências técnicas</h3>
@@ -175,7 +174,7 @@
         </div>
 
         <!-- TECNOLOGIAS E INGRESSO -->
-        <div class="page body-page">
+        <div class="a4-page page body-page font-arial shadow-2xl shadow-black/80">
           <h2 class="section-title">4. Tecnologias, ferramentas e conhecimentos utilizados</h2>
           <table class="academic-table">
             <thead>
@@ -205,7 +204,7 @@
         </div>
 
         <!-- DESAFIOS E TENDÊNCIAS -->
-        <div class="page body-page">
+        <div class="a4-page page body-page font-arial shadow-2xl shadow-black/80">
           <h2 class="section-title">6. Desafios da profissão</h2>
           <table class="academic-table">
             <thead>
@@ -246,7 +245,7 @@
         </div>
 
         <!-- REFLEXÃO PESSOAL -->
-        <div class="page body-page">
+        <div class="a4-page page body-page font-arial shadow-2xl shadow-black/80">
           <h2 class="section-title">9. Reflexão pessoal: minha trajetória e a profissão pesquisada</h2>
           
           <div class="academic-subsection-q">
@@ -294,7 +293,7 @@
         </div>
 
         <!-- PLANEJAMENTO E CUSTOS -->
-        <div class="page body-page">
+        <div class="a4-page page body-page font-arial shadow-2xl shadow-black/80">
           <h2 class="section-title">10. Planejamento inicial de carreira</h2>
           <table class="academic-table">
             <thead>
@@ -340,7 +339,7 @@
         </div>
 
         <!-- PRIORIDADES E CONCLUSÃO -->
-        <div class="page body-page">
+        <div class="a4-page page body-page font-arial shadow-2xl shadow-black/80">
           <h3 class="subsection-title">11.2 Prioridades financeiras</h3>
           <table class="academic-table compact">
             <thead>
@@ -432,7 +431,7 @@
         </div>
 
         <!-- REFERÊNCIAS -->
-        <div class="page body-page">
+        <div class="a4-page page body-page font-arial shadow-2xl shadow-black/80">
           <h2 class="section-title">13. Referências</h2>
           <p class="academic-instructions">Fontes bibliográficas e digitais consultadas:</p>
           <ul v-if="hasListItems(store.reportData.referencias)" class="academic-list">
@@ -445,7 +444,6 @@
           </ul>
         </div>
 
-      </div>
     </div>
   </aside>
 </template>

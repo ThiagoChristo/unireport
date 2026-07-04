@@ -58,9 +58,15 @@ body {
   font-family: 'Arial', Helvetica, sans-serif;
 }
 
+/* Espaçador de páginas na tela */
+.page {
+  margin-bottom: 30px;
+  box-sizing: border-box;
+}
+
 /* CAPA ACADÊMICA */
 .capa-page {
-  height: calc(297mm - 50mm); /* Compensa a margem no preview */
+  height: 297mm !important; /* Capa deve ter exatamente altura A4 */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -112,7 +118,7 @@ body {
 
 /* SUMÁRIO ACADÊMICO */
 .sumario-page {
-  min-height: calc(297mm - 50mm);
+  /* Altura herdada de .a4-page */
 }
 
 .sumario-list {
@@ -150,7 +156,7 @@ body {
 
 /* PÁGINAS DE CONTEÚDO */
 .body-page {
-  min-height: calc(297mm - 50mm);
+  /* Altura herdada de .a4-page */
 }
 
 .section-title {
