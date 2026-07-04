@@ -1,7 +1,7 @@
 <template>
   <aside id="preview-pane-wrapper" class="bg-slate-950 border-l border-slate-800 flex flex-col h-full overflow-hidden">
     <!-- Cabeçalho do Preview -->
-    <div class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex justify-between items-center flex-shrink-0">
+    <div class="preview-header bg-slate-900 border-b border-slate-800 px-6 py-4 flex justify-between items-center flex-shrink-0">
       <h3 class="text-xs font-bold text-slate-200">Pré-visualização (Normas ABNT/UNINTER)</h3>
       <div class="flex items-center gap-3">
         <span class="text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20 px-2 py-0.5 rounded-full">

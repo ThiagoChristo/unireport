@@ -315,16 +315,22 @@ body {
     background-color: transparent !important;
   }
 
-  /* Quebra de páginas física */
+  @page {
+    margin: 0; /* Remove cabeçalho e rodapé padrão do navegador (data, URL, título) */
+  }
+
+  /* Quebra de páginas física e Margens ABNT na impressão */
   .page {
     page-break-before: always;
-    margin-bottom: 0 !important;
-    padding-top: 15mm; /* Compensação de margem de impressão */
+    margin: 0 !important;
+    padding: 30mm 20mm 20mm 30mm !important; /* ABNT: Sup 3cm, Dir 2cm, Inf 2cm, Esq 3cm */
+    min-height: 297mm !important;
+    box-sizing: border-box;
+    background-color: #ffffff !important;
   }
 
   .page:first-child {
     page-break-before: avoid;
-    padding-top: 0;
   }
   
   /* Ocultar placeholders ou transformá-los em texto em branco se vazios */
