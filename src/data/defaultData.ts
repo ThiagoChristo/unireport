@@ -1,5 +1,68 @@
+export interface TableItem {
+    nome: string;
+    desc: string;
+}
+
+export interface PlanejamentoItem {
+    prazo: string;
+    acad: string;
+    prof: string;
+    acao: string;
+}
+
+export interface CustoItem {
+    item: string;
+    nec: string;
+    valor: string;
+    obs: string;
+}
+
+export interface ReportData {
+    id?: number; // Para controle do Dexie
+    curso: string;
+    aluno: string;
+    ru: string;
+    ano: number;
+    intro_profissao: string;
+    intro_motivo: string;
+    atividades: string[];
+    setores: string[];
+    comp_tecnicas: TableItem[];
+    comp_comportamentais: TableItem[];
+    tecnologias: TableItem[];
+    ingresso: string[];
+    desafios: TableItem[];
+    tendencias: string[];
+    relacao: string[];
+    ref_91: string;
+    ref_92: string;
+    ref_93: string;
+    ref_94: string;
+    ref_95: string;
+    ref_96: string;
+    ref_97: string;
+    planejamento: PlanejamentoItem[];
+    custos: CustoItem[];
+    fin_meta: string;
+    fin_valor: string;
+    fin_prazo: string;
+    fin_mensal: string;
+    fin_ajuste: string;
+    aprendizados: string[];
+    contribuicao: string[];
+    intencoes: string[];
+    referencias: string[];
+    checklist_manual: Record<string, boolean>;
+}
+
+export interface ChecklistMetadata {
+    id: string;
+    text: string;
+    sec: string;
+}
+
 // Dados Padrão (Template Base) para o Relatório
-export const defaultData = {
+export const defaultData: ReportData = {
     curso: "Engenharia de Software",
     aluno: "",
     ru: "",
@@ -105,7 +168,7 @@ export const defaultData = {
 };
 
 // Itens oficiais do Checklist da UNINTER
-export const checklistItems = [
+export const checklistItems: ChecklistMetadata[] = [
     { id: 'chk_profissao', text: 'Escolhi uma profissão ou área da Computação.', sec: 'capa' },
     { id: 'chk_o_que_faz', text: 'Expliquei o que esse profissional faz.', sec: 'profissao' },
     { id: 'chk_onde_atua', text: 'Identifiquei onde esse profissional pode atuar.', sec: 'profissao' },

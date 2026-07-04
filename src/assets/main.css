@@ -1,0 +1,340 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   CSS GLOBAL - ADICIONAL AO TAILWIND (GERADOR DE RELATÓRIO)
+   ========================================================================= */
+
+/* TEMA PREMIUM ESCURO PARA O EDITOR (Customizações sobre Tailwind) */
+:root {
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+}
+
+body {
+  background-color: #0f172a;
+}
+
+/* Scrollbars customizadas */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Estilização para as transições das abas */
+.editor-section {
+  animation: fadeIn var(--transition-normal);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   ESTILIZAÇÃO DA FOLHA DE PREVIEW (DIREITA) - PARTE CRÍTICA DO RELATÓRIO
+   ========================================================================== */
+
+/* Simulação da folha A4 em tela */
+.a4-page {
+  background-color: #ffffff;
+  color: #000000;
+  width: 210mm;
+  min-height: 297mm;
+  padding: 30mm 20mm 20mm 30mm; /* ABNT: Superior 3cm, Direita 2cm, Inferior 2cm, Esquerda 3cm */
+  position: relative;
+  font-size: 12pt;
+  line-height: 1.5;
+  text-align: justify;
+  font-family: 'Arial', Helvetica, sans-serif;
+}
+
+/* CAPA ACADÊMICA */
+.capa-page {
+  height: calc(297mm - 50mm); /* Compensa a margem no preview */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.capa-header {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 12pt;
+}
+
+.capa-title-container {
+  margin-top: 4rem;
+}
+
+.capa-title {
+  font-size: 16pt;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.capa-subtitle {
+  font-size: 13pt;
+  font-weight: bold;
+}
+
+.capa-student-box {
+  margin-top: 4rem;
+  font-weight: bold;
+  text-align: right;
+  margin-right: 2cm;
+}
+
+.capa-footer {
+  margin-top: auto;
+  font-size: 11pt;
+  text-transform: uppercase;
+}
+
+.capa-footer .professor {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.capa-footer .ano {
+  font-weight: bold;
+}
+
+/* SUMÁRIO ACADÊMICO */
+.sumario-page {
+  min-height: calc(297mm - 50mm);
+}
+
+.sumario-list {
+  list-style: none;
+  margin-top: 2rem;
+  font-size: 11pt;
+}
+
+.sumario-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+.sumario-dots {
+  flex: 1;
+  border-bottom: 1px dotted #000;
+  margin: 0 10px;
+  position: relative;
+  bottom: 4px;
+}
+
+.sumario-text {
+  font-weight: bold;
+}
+
+.sumario-sub-text {
+  padding-left: 1.5rem;
+}
+
+.sumario-num {
+  font-weight: bold;
+}
+
+/* PÁGINAS DE CONTEÚDO */
+.body-page {
+  min-height: calc(297mm - 50mm);
+}
+
+.section-title {
+  font-size: 12pt;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.subsection-title {
+  font-size: 12pt;
+  font-weight: bold;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+  text-align: left;
+}
+
+.academic-text {
+  text-indent: 2cm; /* Parágrafo ABNT */
+  margin-bottom: 1rem;
+  text-align: justify;
+}
+
+.academic-instructions {
+  margin-bottom: 0.5rem;
+}
+
+.academic-list {
+  margin-left: 2cm;
+  margin-bottom: 1rem;
+  list-style-type: disc;
+}
+
+.academic-list li {
+  margin-bottom: 0.25rem;
+}
+
+.academic-subsection-q {
+  margin-bottom: 1.25rem;
+}
+
+.academic-subsection-q strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.academic-subsection-q p {
+  margin-left: 1rem;
+  text-indent: 0;
+}
+
+/* TABELAS ACADÊMICAS (NORMA) */
+.academic-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 11pt;
+}
+
+.academic-table th,
+.academic-table td {
+  border: 1px solid #000000;
+  padding: 6px 10px;
+  text-align: left;
+}
+
+.academic-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.academic-table.compact th,
+.academic-table.compact td {
+  padding: 4px 8px;
+}
+
+/* PLACEHOLDERS E MENSAGENS VAZIAS NO PREVIEW */
+.placeholder {
+  background-color: #fffee0;
+  border-bottom: 1px dashed #d97706;
+  padding: 0 4px;
+  color: #b45309;
+  font-style: italic;
+}
+
+.placeholder-list li {
+  background-color: #fffee0;
+  color: #b45309;
+  font-style: italic;
+  list-style-type: none;
+  margin-left: -1rem;
+  padding-left: 4px;
+}
+
+.empty-field {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px dashed #f87171;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* ==========================================================================
+   CSS DE IMPRESSÃO (REGRAS DE FORMATAÇÃO DO PDF)
+   ========================================================================== */
+@media print {
+  /* Esconder toda a UI do editor */
+  #sidebar,
+  #editor-pane,
+  .preview-header,
+  #btn-toggle-preview,
+  button,
+  .btn,
+  .preview-controls {
+    display: none !important;
+  }
+  
+  /* Configurar o layout principal para preencher a tela */
+  #app-container {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  
+  #preview-pane-wrapper {
+    width: 100% !important;
+    height: auto !important;
+    border-left: none !important;
+    background-color: transparent !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  #preview-pane {
+    overflow: visible !important;
+  }
+  
+  .a4-page-container {
+    padding: 0 !important;
+    background-color: transparent !important;
+    overflow: visible !important;
+  }
+  
+  .a4-page {
+    width: 100% !important;
+    box-shadow: none !important;
+    padding: 0 !important; /* Margem controlada pela impressora */
+    margin: 0 !important;
+    background-color: transparent !important;
+  }
+
+  /* Quebra de páginas física */
+  .page {
+    page-break-before: always;
+    margin-bottom: 0 !important;
+    padding-top: 15mm; /* Compensação de margem de impressão */
+  }
+
+  .page:first-child {
+    page-break-before: avoid;
+    padding-top: 0;
+  }
+  
+  /* Ocultar placeholders ou transformá-los em texto em branco se vazios */
+  .placeholder {
+    background-color: transparent !important;
+    border-bottom: none !important;
+    color: #000000 !important;
+  }
+  
+  .empty-field {
+    background-color: transparent !important;
+    border: none !important;
+    color: #000000 !important;
+    padding: 0 !important;
+  }
+
+  /* Otimizações de Cores para Impressão */
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+}
